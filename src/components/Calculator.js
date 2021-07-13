@@ -13,12 +13,73 @@ const Calculator = () => {
   const [isMinusClicked, setIsMinusClicked] = useState(false);
   const [isMultiplyClicked, setIsMultiplyClicked] = useState(false);
   const [isDivideClicked, setIsDivideClicked] = useState(false);
+  console.log("firstNumber", firstNumber);
+  console.log("secondNumber", secondNumber);
 
+  const handleKeyDown = (event) => {
+    if (event.key === "1") {
+      handleNumClick(1);
+    }
+    if (event.key === "2") {
+      handleNumClick(2);
+    }
+    if (event.key === "3") {
+      handleNumClick(3);
+    }
+    if (event.key === "4") {
+      handleNumClick(4);
+    }
+    if (event.key === "5") {
+      handleNumClick(5);
+    }
+    if (event.key === "6") {
+      handleNumClick(6);
+    }
+    if (event.key === "7") {
+      handleNumClick(7);
+    }
+    if (event.key === "8") {
+      handleNumClick(8);
+    }
+    if (event.key === "9") {
+      handleNumClick(9);
+    }
+    if (event.key === "0") {
+      handleNumClick(0);
+    }
+    if (event.key === ".") {
+      handleDotClick(".");
+    }
+    if (event.key === "+") {
+      handleAddition();
+    }
+    if (event.key === "-") {
+      handleMinus();
+    }
+    if (event.key === "*") {
+      handleMultiply();
+    }
+    if (event.key === "/") {
+      handleDivide();
+    }
+    if (event.key === "Enter") {
+      equals();
+    }
+    if (event.key === "Backspace") {
+      allClear();
+    }
+  };
   useEffect(() => {
     if (firstNumber !== "") {
       setInput(firstNumber);
     }
   }, [firstNumber]);
+  useEffect(() => {
+    window.addEventListener("keydown", handleKeyDown);
+    return () => {
+      window.removeEventListener("keydown", handleKeyDown);
+    };
+  }, [firstNumber]); // WHY???????????????????????????????????????????????????
   const handleZero = (value) => {
     if (firstNumber[firstNumber.length - 1] === ".") {
       setFirstNumber(`${firstNumber}${value.target.innerText}`);
@@ -31,10 +92,10 @@ const Calculator = () => {
   };
   const handleNumClick = (value) => {
     if (firstNumber[0] === "0" && firstNumber[1] === ".") {
-      setFirstNumber(`${firstNumber}${value.target.innerText}`);
+      setFirstNumber(`${firstNumber}${value}`);
     }
     if (firstNumber[0] !== "0") {
-      setFirstNumber(`${firstNumber}${value.target.innerText}`);
+      setFirstNumber(`${firstNumber}${value}`);
     }
   };
   const allClear = () => {
@@ -43,8 +104,9 @@ const Calculator = () => {
     setSecondNumber("");
   };
   const handleDotClick = (value) => {
+    console.log("value dot", value);
     if (!firstNumber.includes(".")) {
-      setFirstNumber(`${firstNumber}${value.target.innerText}`);
+      setFirstNumber(`${firstNumber}${value}`);
     }
   };
   const toggleSign = () => {
@@ -58,14 +120,14 @@ const Calculator = () => {
   };
   const equals = () => {
     if (isPlusClicked) {
-      let sum = +firstNumber + +secondNumber + "";
+      let sum = +secondNumber + +firstNumber;
       setInput(sum);
       setFirstNumber("");
       setSecondNumber(sum);
       setIsPlusClicked(false);
     }
     if (isMinusClicked) {
-      let extracted = +secondNumber - +firstNumber + "";
+      let extracted = +secondNumber - +firstNumber;
       setInput(extracted);
       setFirstNumber("");
       setSecondNumber(extracted);
@@ -92,7 +154,7 @@ const Calculator = () => {
       setSecondNumber(firstNumber);
       setFirstNumber("");
     } else if (firstNumber !== "") {
-      let mul = +firstNumber * +secondNumber;
+      let mul = +secondNumber * +firstNumber;
       setInput(mul);
       setFirstNumber("");
       setSecondNumber(mul);
@@ -183,17 +245,26 @@ const Calculator = () => {
             </Row>
             <Row style={{ marginTop: "10px" }}>
               <Col span={6}>
-                <button className="btn" onClick={(e) => handleNumClick(e)}>
+                <button
+                  className="btn"
+                  onClick={(e) => handleNumClick(e.target.innerText)}
+                >
                   7
                 </button>
               </Col>
               <Col span={6}>
-                <button className="btn" onClick={(e) => handleNumClick(e)}>
+                <button
+                  className="btn"
+                  onClick={(e) => handleNumClick(e.target.innerText)}
+                >
                   8
                 </button>
               </Col>
               <Col span={6}>
-                <button className="btn" onClick={(e) => handleNumClick(e)}>
+                <button
+                  className="btn"
+                  onClick={(e) => handleNumClick(e.target.innerText)}
+                >
                   9
                 </button>
               </Col>
@@ -209,17 +280,26 @@ const Calculator = () => {
             </Row>
             <Row style={{ marginTop: "10px" }}>
               <Col span={6}>
-                <button className="btn" onClick={(e) => handleNumClick(e)}>
+                <button
+                  className="btn"
+                  onClick={(e) => handleNumClick(e.target.innerText)}
+                >
                   4
                 </button>
               </Col>
               <Col span={6}>
-                <button className="btn" onClick={(e) => handleNumClick(e)}>
+                <button
+                  className="btn"
+                  onClick={(e) => handleNumClick(e.target.innerText)}
+                >
                   5
                 </button>
               </Col>
               <Col span={6}>
-                <button className="btn" onClick={(e) => handleNumClick(e)}>
+                <button
+                  className="btn"
+                  onClick={(e) => handleNumClick(e.target.innerText)}
+                >
                   6
                 </button>
               </Col>
@@ -235,17 +315,26 @@ const Calculator = () => {
             </Row>
             <Row style={{ marginTop: "10px" }}>
               <Col span={6}>
-                <button className="btn" onClick={(e) => handleNumClick(e)}>
+                <button
+                  className="btn"
+                  onClick={(e) => handleNumClick(e.target.innerText)}
+                >
                   1
                 </button>
               </Col>
               <Col span={6}>
-                <button className="btn" onClick={(e) => handleNumClick(e)}>
+                <button
+                  className="btn"
+                  onClick={(e) => handleNumClick(e.target.innerText)}
+                >
                   2
                 </button>
               </Col>
               <Col span={6}>
-                <button className="btn" onClick={(e) => handleNumClick(e)}>
+                <button
+                  className="btn"
+                  onClick={(e) => handleNumClick(e.target.innerText)}
+                >
                   3
                 </button>
               </Col>
@@ -275,7 +364,10 @@ const Calculator = () => {
                 </button>
               </Col>
               <Col span={6}>
-                <button className="btn" onClick={handleDotClick}>
+                <button
+                  className="btn"
+                  onClick={(e) => handleDotClick(e.target.innerText)}
+                >
                   .
                 </button>
               </Col>
