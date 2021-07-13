@@ -104,9 +104,11 @@ const Calculator = () => {
     setSecondNumber("");
   };
   const handleDotClick = (value) => {
-    console.log("value dot", value);
     if (!firstNumber.includes(".")) {
       setFirstNumber(`${firstNumber}${value}`);
+    }
+    if (firstNumber.length < 1) {
+      setFirstNumber(`0${value}`);
     }
   };
   const toggleSign = () => {
