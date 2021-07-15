@@ -1,6 +1,7 @@
 import React from "react";
 import { useState, useEffect } from "react";
 import { Row, Col } from "antd";
+import { CalcConfig } from "./config";
 
 const Calculator = () => {
   //input states
@@ -15,6 +16,7 @@ const Calculator = () => {
   const [isDivideClicked, setIsDivideClicked] = useState(false);
   console.log("firstNumber", firstNumber);
   console.log("secondNumber", secondNumber);
+  console.log(isMultiplyClicked);
 
   const handleKeyDown = (event) => {
     if (event.key === "1") {
@@ -51,16 +53,16 @@ const Calculator = () => {
       handleDotClick(".");
     }
     if (event.key === "+") {
-      handleAddition();
+      operation("+");
     }
     if (event.key === "-") {
-      handleMinus();
+      operation("-");
     }
     if (event.key === "*") {
-      handleMultiply();
+      operation("*");
     }
     if (event.key === "/") {
-      handleDivide();
+      operation("/");
     }
     if (event.key === "Enter") {
       equals();
@@ -69,27 +71,30 @@ const Calculator = () => {
       allClear();
     }
   };
+
   useEffect(() => {
     if (firstNumber !== "") {
       setInput(firstNumber);
     }
   }, [firstNumber]);
-  useEffect(() => {
-    window.addEventListener("keydown", handleKeyDown);
-    return () => {
-      window.removeEventListener("keydown", handleKeyDown);
-    };
-  }, [firstNumber]); // WHY???????????????????????????????????????????????????
+  // useEffect(() => {
+  //   window.addEventListener("keydown", handleKeyDown);
+  //   return () => {
+  //     window.removeEventListener("keydown", handleKeyDown);
+  //   };
+  // }, [firstNumber]); // WHY???????????????????????????????????????????????????
+
   const handleZero = (value) => {
     if (firstNumber[firstNumber.length - 1] === ".") {
-      setFirstNumber(`${firstNumber}${value.target.innerText}`);
+      setFirstNumber(`${firstNumber}${value}`);
     } else if (firstNumber[0] === "0" && !firstNumber.includes(".")) {
       return;
     } else if (firstNumber.includes("0")) {
-      setFirstNumber(`${firstNumber}${value.target.innerText}`);
+      setFirstNumber(`${firstNumber}${value}`);
     }
-    setFirstNumber(`${firstNumber}${value.target.innerText}`);
+    setFirstNumber(`${firstNumber}${value}`);
   };
+
   const handleNumClick = (value) => {
     if (firstNumber[0] === "0" && firstNumber[1] === ".") {
       setFirstNumber(`${firstNumber}${value}`);
@@ -98,6 +103,7 @@ const Calculator = () => {
       setFirstNumber(`${firstNumber}${value}`);
     }
   };
+
   const allClear = () => {
     setFirstNumber("");
     setInput("");
@@ -107,6 +113,9 @@ const Calculator = () => {
     console.log("value dot", value);
     if (!firstNumber.includes(".")) {
       setFirstNumber(`${firstNumber}${value}`);
+    }
+    if (firstNumber.length < 1) {
+      setFirstNumber(`0${value}`);
     }
   };
   const toggleSign = () => {
@@ -119,6 +128,7 @@ const Calculator = () => {
     }
   };
   const equals = () => {
+    console.log("equals");
     if (isPlusClicked) {
       let sum = +secondNumber + +firstNumber;
       setInput(sum);
@@ -133,14 +143,15 @@ const Calculator = () => {
       setSecondNumber(extracted);
       setIsMinusClicked(false);
     }
-    if (isMultiplyClicked) {
+    if (isMultiplyClicked && firstNumber) {
+      console.log("isMultiplyClicked && firstNumber");
       let multiplied = +secondNumber * +firstNumber;
       setInput(multiplied);
       setFirstNumber("");
       setSecondNumber(multiplied);
       setIsMultiplyClicked(false);
     }
-    if (isDivideClicked) {
+    if (isDivideClicked && firstNumber) {
       let divided = +secondNumber / +firstNumber;
       setInput(divided);
       setFirstNumber("");
@@ -148,62 +159,75 @@ const Calculator = () => {
       setIsDivideClicked(false);
     }
   };
-  const handleMultiply = () => {
-    setIsMultiplyClicked(true);
+
+  const operation = (sign) => {
+    const setAllStates = (result) => {
+      console.log("result", result);
+      setInput(result);
+      setFirstNumber("");
+      setSecondNumber(result);
+    };
     if (secondNumber === "") {
       setSecondNumber(firstNumber);
       setFirstNumber("");
-    } else if (firstNumber !== "") {
-      let mul = +secondNumber * +firstNumber;
-      setInput(mul);
-      setFirstNumber("");
-      setSecondNumber(mul);
-    }
-    equals();
-  };
-  const handleDivide = () => {
-    setIsDivideClicked(true);
-    if (secondNumber === "") {
-      setSecondNumber(firstNumber);
-      setFirstNumber("");
-    } else if (firstNumber !== "") {
-      let divided = +secondNumber / +firstNumber;
-      setInput(divided);
-      setFirstNumber("");
-      setSecondNumber(divided);
-    }
-    equals();
-  };
-  const handleAddition = () => {
-    setIsPlusClicked(true);
-    if (secondNumber === "") {
-      setSecondNumber(firstNumber);
-      setFirstNumber("");
-    } else {
-      let sum = +firstNumber + +secondNumber;
-      setInput(sum);
-      setFirstNumber("");
-      setSecondNumber(sum);
+      if (sign === "*") {
+        setIsMultiplyClicked(true);
+      } else if (sign === "/") {
+        setIsDivideClicked(true);
+      } else if (sign === "+") {
+        setIsPlusClicked(true);
+      } else if (sign === "-") {
+        setIsMinusClicked(true);
+      }
+    } else if (firstNumber !== "" && secondNumber !== "") {
+      if (sign === "/") {
+        setIsDivideClicked(true);
+        let result = +secondNumber / +firstNumber;
+        setAllStates(result);
+      } else if (sign === "*") {
+        console.log("sign === *");
+        setIsMultiplyClicked(true);
+        let result = +secondNumber * +firstNumber;
+        setAllStates(result);
+      } else if (sign === "+") {
+        setIsPlusClicked(true);
+        let result = +secondNumber + +firstNumber;
+        setAllStates(result);
+      } else if (sign === "-") {
+        setIsMinusClicked(true);
+        let result = +secondNumber - +firstNumber;
+        setAllStates(result);
+      }
     }
     equals();
   };
 
-  const handleMinus = () => {
-    setIsMinusClicked(true);
-    if (secondNumber === "") {
-      setSecondNumber(firstNumber);
-      setFirstNumber("");
+  const handleAnyButton = (val) => {
+    if (val === "=") {
+      equals();
+    } else if (val === "AC") {
+      allClear();
+    } else if (val === "+/-") {
+      toggleSign();
     } else {
-      let extracted = +secondNumber - +firstNumber;
-      setInput(extracted);
-      setFirstNumber("");
-      setSecondNumber(extracted);
+      operation(val);
     }
-    equals();
+  };
+
+  const handleButtonClick = (col) => {
+    if (col?.operation) {
+      handleAnyButton(col.operation);
+    } else {
+      handleNumClick(col.value);
+    }
   };
 
   return (
-    <div style={{ display: "flex", justifyContent: "center" }}>
+    <div
+      style={{ display: "flex", justifyContent: "center", outline: "none" }}
+      onKeyDown={(e) => handleKeyDown(e)}
+      tabIndex="0"
+    >
       <div className="container">
         <div style={{ backgroundColor: "black" }}>
           <input
@@ -217,170 +241,27 @@ const Calculator = () => {
               textAlign: "end",
             }}
             value={input}
-          ></input>
+          />
           <div style={{ marginTop: "50px", marginLeft: "20px" }}>
-            <Row>
-              <Col span={6}>
-                <button className="btnTop" onClick={allClear}>
-                  AC
-                </button>
-              </Col>
-              <Col span={6}>
-                <button className="btnTop" onClick={toggleSign}>
-                  +/-
-                </button>
-              </Col>
-              <Col span={6}>
-                <button className="btnTop">%</button>
-              </Col>
-              <Col span={6}>
-                <button
-                  className="btn"
-                  style={{ backgroundColor: "rgb(187, 126, 36)" }}
-                  onClick={handleDivide}
-                >
-                  /
-                </button>
-              </Col>
-            </Row>
-            <Row style={{ marginTop: "10px" }}>
-              <Col span={6}>
-                <button
-                  className="btn"
-                  onClick={(e) => handleNumClick(e.target.innerText)}
-                >
-                  7
-                </button>
-              </Col>
-              <Col span={6}>
-                <button
-                  className="btn"
-                  onClick={(e) => handleNumClick(e.target.innerText)}
-                >
-                  8
-                </button>
-              </Col>
-              <Col span={6}>
-                <button
-                  className="btn"
-                  onClick={(e) => handleNumClick(e.target.innerText)}
-                >
-                  9
-                </button>
-              </Col>
-              <Col span={6}>
-                <button
-                  className="btn"
-                  style={{ backgroundColor: "rgb(187, 126, 36)" }}
-                  onClick={handleMultiply}
-                >
-                  *
-                </button>
-              </Col>
-            </Row>
-            <Row style={{ marginTop: "10px" }}>
-              <Col span={6}>
-                <button
-                  className="btn"
-                  onClick={(e) => handleNumClick(e.target.innerText)}
-                >
-                  4
-                </button>
-              </Col>
-              <Col span={6}>
-                <button
-                  className="btn"
-                  onClick={(e) => handleNumClick(e.target.innerText)}
-                >
-                  5
-                </button>
-              </Col>
-              <Col span={6}>
-                <button
-                  className="btn"
-                  onClick={(e) => handleNumClick(e.target.innerText)}
-                >
-                  6
-                </button>
-              </Col>
-              <Col span={6}>
-                <button
-                  className="btn"
-                  style={{ backgroundColor: "rgb(187, 126, 36)" }}
-                  onClick={handleMinus}
-                >
-                  -
-                </button>
-              </Col>
-            </Row>
-            <Row style={{ marginTop: "10px" }}>
-              <Col span={6}>
-                <button
-                  className="btn"
-                  onClick={(e) => handleNumClick(e.target.innerText)}
-                >
-                  1
-                </button>
-              </Col>
-              <Col span={6}>
-                <button
-                  className="btn"
-                  onClick={(e) => handleNumClick(e.target.innerText)}
-                >
-                  2
-                </button>
-              </Col>
-              <Col span={6}>
-                <button
-                  className="btn"
-                  onClick={(e) => handleNumClick(e.target.innerText)}
-                >
-                  3
-                </button>
-              </Col>
-              <Col span={6}>
-                <button
-                  className="btn"
-                  style={{ backgroundColor: "rgb(187, 126, 36)" }}
-                  onClick={handleAddition}
-                >
-                  +
-                </button>
-              </Col>
-            </Row>
-            <Row style={{ marginTop: "10px" }}>
-              <Col span={12}>
-                <button
-                  style={{
-                    width: "160px",
-                    height: "70px",
-                    borderRadius: "50%",
-                    backgroundColor: "grey",
-                    fontSize: "25px",
-                  }}
-                  onClick={(e) => handleZero(e)}
-                >
-                  0
-                </button>
-              </Col>
-              <Col span={6}>
-                <button
-                  className="btn"
-                  onClick={(e) => handleDotClick(e.target.innerText)}
-                >
-                  .
-                </button>
-              </Col>
-              <Col span={6}>
-                <button
-                  className="btn"
-                  style={{ backgroundColor: "rgb(187, 126, 36)" }}
-                  onClick={equals}
-                >
-                  =
-                </button>
-              </Col>
-            </Row>
+            {CalcConfig.map((row) => {
+              return (
+                <Row>
+                  {row.map((col) => {
+                    return (
+                      <Col span={col.span ?? 6}>
+                        <button
+                          className={col.className}
+                          onClick={() => handleButtonClick(col)}
+                          style={{ backgroundColor: col.backgroundColor }}
+                        >
+                          {col.value}
+                        </button>
+                      </Col>
+                    );
+                  })}
+                </Row>
+              );
+            })}
           </div>
         </div>
       </div>
