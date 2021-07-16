@@ -16,6 +16,8 @@ const Calculator = () => {
   const [isDivideClicked, setIsDivideClicked] = useState(false);
   console.log("firstNumber", firstNumber);
   console.log("secondNumber", secondNumber);
+  console.log("isMultiplyClicked", isMultiplyClicked);
+  console.log("isDivideClicked", isDivideClicked);
 
   const handleKeyDown = (event) => {
     if (event.key === "1") {
@@ -136,7 +138,6 @@ const Calculator = () => {
         setSecondNumber(firstNumber);
         setFirstNumber("");
       } else {
-        console.log("handleAddition");
         let sum = +firstNumber + +secondNumber;
         setInput(sum);
         setFirstNumber("");
@@ -181,12 +182,15 @@ const Calculator = () => {
         setSecondNumber(firstNumber);
         setFirstNumber("");
       } else if (firstNumber !== "") {
+        setIsDivideClicked(true);
         let divided = +secondNumber / +firstNumber;
         setInput(divided);
         setFirstNumber("");
         setSecondNumber(divided);
       }
-      equals();
+      if (isDivideClicked) {
+        equals();
+      }
     }
     //handleEquals
     if (sign === "=") {
@@ -229,6 +233,7 @@ const Calculator = () => {
       setIsMultiplyClicked(false);
     }
     if (isDivideClicked && firstNumber) {
+      console.log("isDivideClicked && firstNumber");
       let divided = +secondNumber / +firstNumber;
       setInput(divided);
       setFirstNumber("");
