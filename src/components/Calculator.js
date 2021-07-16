@@ -18,6 +18,8 @@ const Calculator = () => {
   console.log("secondNumber", secondNumber);
   console.log("isMultiplyClicked", isMultiplyClicked);
   console.log("isDivideClicked", isDivideClicked);
+  console.log("plus", isPlusClicked);
+  console.log("minus", isMinusClicked);
 
   const handleKeyDown = (event) => {
     if (event.key === "1") {
@@ -103,6 +105,9 @@ const Calculator = () => {
     if (firstNumber[0] !== "0") {
       setFirstNumber(`${firstNumber}${value}`);
     }
+    if (value === "0") {
+      handleZero("0");
+    }
   };
 
   const allClear = () => {
@@ -161,7 +166,9 @@ const Calculator = () => {
     }
     //handleMultiply
     if (sign === "*") {
-      setIsDivideClicked(false);
+      if (isDivideClicked) {
+        setIsDivideClicked(false);
+      }
       setIsMultiplyClicked(true);
       if (secondNumber === "") {
         setSecondNumber(firstNumber);
@@ -176,21 +183,20 @@ const Calculator = () => {
     }
     //handleDivide
     if (sign === "/") {
-      setIsMultiplyClicked(false);
+      if (isMultiplyClicked) {
+        setIsMultiplyClicked(false);
+      }
       setIsDivideClicked(true);
       if (secondNumber === "") {
         setSecondNumber(firstNumber);
         setFirstNumber("");
       } else if (firstNumber !== "") {
-        setIsDivideClicked(true);
         let divided = +secondNumber / +firstNumber;
         setInput(divided);
         setFirstNumber("");
         setSecondNumber(divided);
       }
-      if (isDivideClicked) {
-        equals();
-      }
+      equals();
     }
     //handleEquals
     if (sign === "=") {
@@ -225,20 +231,20 @@ const Calculator = () => {
       setIsMinusClicked(false);
     }
     if (isMultiplyClicked && firstNumber) {
+      // setIsDivideClicked(false);
       console.log("isMultiplyClicked && firstNumber");
       let multiplied = +secondNumber * +firstNumber;
       setInput(multiplied);
       setFirstNumber("");
       setSecondNumber(multiplied);
-      setIsMultiplyClicked(false);
     }
     if (isDivideClicked && firstNumber) {
+      // setIsMultiplyClicked(false);
       console.log("isDivideClicked && firstNumber");
       let divided = +secondNumber / +firstNumber;
       setInput(divided);
       setFirstNumber("");
       setSecondNumber(divided);
-      setIsDivideClicked(false);
     }
   };
   const handleButtonClick = (col) => {

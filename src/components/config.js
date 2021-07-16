@@ -42,7 +42,6 @@ export const CalcConfig = [
     {
       value: "*",
       className: "btn",
-
       backgroundColor: "rgb(187, 126, 36)",
       operation: "*",
     },
