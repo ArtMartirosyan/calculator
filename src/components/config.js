@@ -63,7 +63,6 @@ export const CalcConfig = [
     {
       value: "-",
       className: "btn",
-
       backgroundColor: "rgb(187, 126, 36)",
       operation: "-",
     },
@@ -93,12 +92,13 @@ export const CalcConfig = [
     {
       value: "0",
       className: "btn",
-
       span: 12,
+      width: "170px",
     },
     {
       value: ".",
       className: "btn",
+      operation: ".",
     },
     {
       value: "=",

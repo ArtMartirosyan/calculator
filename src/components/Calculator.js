@@ -16,7 +16,6 @@ const Calculator = () => {
   const [isDivideClicked, setIsDivideClicked] = useState(false);
   console.log("firstNumber", firstNumber);
   console.log("secondNumber", secondNumber);
-  console.log(isMultiplyClicked);
 
   const handleKeyDown = (event) => {
     if (event.key === "1") {
@@ -109,8 +108,8 @@ const Calculator = () => {
     setInput("");
     setSecondNumber("");
   };
+
   const handleDotClick = (value) => {
-    console.log("value dot", value);
     if (!firstNumber.includes(".")) {
       setFirstNumber(`${firstNumber}${value}`);
     }
@@ -118,6 +117,7 @@ const Calculator = () => {
       setFirstNumber(`0${value}`);
     }
   };
+
   const toggleSign = () => {
     if (firstNumber) {
       setFirstNumber(-firstNumber);
@@ -127,8 +127,85 @@ const Calculator = () => {
       setInput(-secondNumber);
     }
   };
+
+  const operation = (sign) => {
+    //handleAddition
+    if (sign === "+") {
+      setIsPlusClicked(true);
+      if (secondNumber === "") {
+        setSecondNumber(firstNumber);
+        setFirstNumber("");
+      } else {
+        console.log("handleAddition");
+        let sum = +firstNumber + +secondNumber;
+        setInput(sum);
+        setFirstNumber("");
+        setSecondNumber(sum);
+      }
+      equals();
+    }
+    //handleMinus
+    if (sign === "-") {
+      setIsMinusClicked(true);
+      if (secondNumber === "") {
+        setSecondNumber(firstNumber);
+        setFirstNumber("");
+      } else {
+        let extracted = +secondNumber - +firstNumber;
+        setInput(extracted);
+        setFirstNumber("");
+        setSecondNumber(extracted);
+      }
+      equals();
+    }
+    //handleMultiply
+    if (sign === "*") {
+      setIsDivideClicked(false);
+      setIsMultiplyClicked(true);
+      if (secondNumber === "") {
+        setSecondNumber(firstNumber);
+        setFirstNumber("");
+      } else if (firstNumber !== "") {
+        let mul = +secondNumber * +firstNumber;
+        setInput(mul);
+        setFirstNumber("");
+        setSecondNumber(mul);
+      }
+      equals();
+    }
+    //handleDivide
+    if (sign === "/") {
+      setIsMultiplyClicked(false);
+      setIsDivideClicked(true);
+      if (secondNumber === "") {
+        setSecondNumber(firstNumber);
+        setFirstNumber("");
+      } else if (firstNumber !== "") {
+        let divided = +secondNumber / +firstNumber;
+        setInput(divided);
+        setFirstNumber("");
+        setSecondNumber(divided);
+      }
+      equals();
+    }
+    //handleEquals
+    if (sign === "=") {
+      equals();
+    }
+    //handleToggleSign
+    if (sign === "+/-") {
+      toggleSign();
+    }
+    if (sign === "AC") {
+      allClear();
+    }
+    //handleDotClick
+    if (sign === ".") {
+      handleDotClick(".");
+    }
+  };
+
   const equals = () => {
-    console.log("equals");
     if (isPlusClicked) {
       let sum = +secondNumber + +firstNumber;
       setInput(sum);
@@ -159,64 +236,9 @@ const Calculator = () => {
       setIsDivideClicked(false);
     }
   };
-
-  const operation = (sign) => {
-    const setAllStates = (result) => {
-      console.log("result", result);
-      setInput(result);
-      setFirstNumber("");
-      setSecondNumber(result);
-    };
-    if (secondNumber === "") {
-      setSecondNumber(firstNumber);
-      setFirstNumber("");
-      if (sign === "*") {
-        setIsMultiplyClicked(true);
-      } else if (sign === "/") {
-        setIsDivideClicked(true);
-      } else if (sign === "+") {
-        setIsPlusClicked(true);
-      } else if (sign === "-") {
-        setIsMinusClicked(true);
-      }
-    } else if (firstNumber !== "" && secondNumber !== "") {
-      if (sign === "/") {
-        setIsDivideClicked(true);
-        let result = +secondNumber / +firstNumber;
-        setAllStates(result);
-      } else if (sign === "*") {
-        console.log("sign === *");
-        setIsMultiplyClicked(true);
-        let result = +secondNumber * +firstNumber;
-        setAllStates(result);
-      } else if (sign === "+") {
-        setIsPlusClicked(true);
-        let result = +secondNumber + +firstNumber;
-        setAllStates(result);
-      } else if (sign === "-") {
-        setIsMinusClicked(true);
-        let result = +secondNumber - +firstNumber;
-        setAllStates(result);
-      }
-    }
-    equals();
-  };
-
-  const handleAnyButton = (val) => {
-    if (val === "=") {
-      equals();
-    } else if (val === "AC") {
-      allClear();
-    } else if (val === "+/-") {
-      toggleSign();
-    } else {
-      operation(val);
-    }
-  };
-
   const handleButtonClick = (col) => {
     if (col?.operation) {
-      handleAnyButton(col.operation);
+      operation(col.operation);
     } else {
       handleNumClick(col.value);
     }
@@ -245,21 +267,26 @@ const Calculator = () => {
           <div style={{ marginTop: "50px", marginLeft: "20px" }}>
             {CalcConfig.map((row) => {
               return (
-                <Row>
-                  {row.map((col) => {
-                    return (
-                      <Col span={col.span ?? 6}>
-                        <button
-                          className={col.className}
-                          onClick={() => handleButtonClick(col)}
-                          style={{ backgroundColor: col.backgroundColor }}
-                        >
-                          {col.value}
-                        </button>
-                      </Col>
-                    );
-                  })}
-                </Row>
+                <div>
+                  <Row style={{ marginTop: "10px" }}>
+                    {row.map((col) => {
+                      return (
+                        <Col span={col.span ?? 6}>
+                          <button
+                            className={col.className}
+                            onClick={() => handleButtonClick(col)}
+                            style={{
+                              backgroundColor: col.backgroundColor,
+                              width: col.width,
+                            }}
+                          >
+                            {col.value}
+                          </button>
+                        </Col>
+                      );
+                    })}
+                  </Row>
+                </div>
               );
             })}
           </div>
