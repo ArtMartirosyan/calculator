@@ -14,64 +14,70 @@ const Calculator = () => {
   const [isMinusClicked, setIsMinusClicked] = useState(false);
   const [isMultiplyClicked, setIsMultiplyClicked] = useState(false);
   const [isDivideClicked, setIsDivideClicked] = useState(false);
+
   console.log("firstNumber", firstNumber);
   console.log("secondNumber", secondNumber);
+  console.log("isPlusClicked", isPlusClicked);
+  console.log("isMinusClicked", isMinusClicked);
   console.log("isMultiplyClicked", isMultiplyClicked);
   console.log("isDivideClicked", isDivideClicked);
-  console.log("plus", isPlusClicked);
-  console.log("minus", isMinusClicked);
 
   const handleKeyDown = (event) => {
-    if (event.key === "1") {
-      handleNumClick(1);
-    }
-    if (event.key === "2") {
-      handleNumClick(2);
-    }
-    if (event.key === "3") {
-      handleNumClick(3);
-    }
-    if (event.key === "4") {
-      handleNumClick(4);
-    }
-    if (event.key === "5") {
-      handleNumClick(5);
-    }
-    if (event.key === "6") {
-      handleNumClick(6);
-    }
-    if (event.key === "7") {
-      handleNumClick(7);
-    }
-    if (event.key === "8") {
-      handleNumClick(8);
-    }
-    if (event.key === "9") {
-      handleNumClick(9);
-    }
-    if (event.key === "0") {
-      handleNumClick(0);
-    }
-    if (event.key === ".") {
-      handleDotClick(".");
-    }
-    if (event.key === "+") {
-      operation("+");
-    }
-    if (event.key === "-") {
-      operation("-");
-    }
-    if (event.key === "*") {
-      operation("*");
-    }
-    if (event.key === "/") {
-      operation("/");
-    }
-    if (event.key === "Enter") {
-      equals();
-    }
-    if (event.key === "Backspace") {
-      allClear();
+    // TODO replace to switch case
+    switch (event.key) {
+      case "1":
+        handleNumClick(1);
+        break;
+      case "2":
+        handleNumClick(2);
+        break;
+      case "3":
+        handleNumClick(3);
+        break;
+      case "4":
+        handleNumClick(4);
+        break;
+      case "5":
+        handleNumClick(5);
+        break;
+      case "6":
+        handleNumClick(6);
+        break;
+      case "7":
+        handleNumClick(7);
+        break;
+      case "8":
+        handleNumClick(8);
+        break;
+      case "9":
+        handleNumClick(9);
+        break;
+      case "0":
+        handleZero(0);
+        break;
+      case ".":
+        handleDotClick(".");
+        break;
+      case "+":
+        operation("+");
+        break;
+      case "-":
+        operation("-");
+        break;
+      case "*":
+        operation("*");
+        break;
+      case "/":
+        operation("/");
+        break;
+      case "Enter":
+        equals();
+        break;
+      case "Backspace":
+        allClear();
+        break;
+      default:
+        break;
     }
   };
 
@@ -80,12 +86,6 @@ const Calculator = () => {
       setInput(firstNumber);
     }
   }, [firstNumber]);
-  // useEffect(() => {
-  //   window.addEventListener("keydown", handleKeyDown);
-  //   return () => {
-  //     window.removeEventListener("keydown", handleKeyDown);
-  //   };
-  // }, [firstNumber]); // WHY???????????????????????????????????????????????????
 
   const handleZero = (value) => {
     if (firstNumber[firstNumber.length - 1] === ".") {
@@ -134,73 +134,69 @@ const Calculator = () => {
       setInput(-secondNumber);
     }
   };
+  const clearPreviousOperations = () => {
+    if (isMinusClicked) {
+      setIsMinusClicked(false);
+    }
+    if (isPlusClicked) {
+      setIsPlusClicked(false);
+    }
+    if (isDivideClicked) {
+      setIsDivideClicked(false);
+    }
+    if (isMultiplyClicked) {
+      setIsMultiplyClicked(false);
+    }
+  };
 
   const operation = (sign) => {
     //handleAddition
     if (sign === "+") {
+      clearPreviousOperations();
       setIsPlusClicked(true);
       if (secondNumber === "") {
         setSecondNumber(firstNumber);
         setFirstNumber("");
       } else {
-        let sum = +firstNumber + +secondNumber;
-        setInput(sum);
-        setFirstNumber("");
-        setSecondNumber(sum);
+        equals(true, secondNumber, firstNumber);
       }
-      equals();
     }
     //handleMinus
     if (sign === "-") {
+      clearPreviousOperations();
       setIsMinusClicked(true);
       if (secondNumber === "") {
         setSecondNumber(firstNumber);
         setFirstNumber("");
       } else {
-        let extracted = +secondNumber - +firstNumber;
-        setInput(extracted);
-        setFirstNumber("");
-        setSecondNumber(extracted);
+        equals(true, secondNumber, firstNumber);
       }
-      equals();
     }
     //handleMultiply
     if (sign === "*") {
-      if (isDivideClicked) {
-        setIsDivideClicked(false);
-      }
+      clearPreviousOperations();
       setIsMultiplyClicked(true);
       if (secondNumber === "") {
         setSecondNumber(firstNumber);
         setFirstNumber("");
       } else if (firstNumber !== "") {
-        let mul = +secondNumber * +firstNumber;
-        setInput(mul);
-        setFirstNumber("");
-        setSecondNumber(mul);
+        equals(true, secondNumber, firstNumber);
       }
-      equals();
     }
     //handleDivide
     if (sign === "/") {
-      if (isMultiplyClicked) {
-        setIsMultiplyClicked(false);
-      }
+      clearPreviousOperations();
       setIsDivideClicked(true);
       if (secondNumber === "") {
         setSecondNumber(firstNumber);
         setFirstNumber("");
       } else if (firstNumber !== "") {
-        let divided = +secondNumber / +firstNumber;
-        setInput(divided);
-        setFirstNumber("");
-        setSecondNumber(divided);
+        equals(true, secondNumber, firstNumber);
       }
-      equals();
     }
     //handleEquals
     if (sign === "=") {
-      equals();
+      equals(false, secondNumber, firstNumber);
     }
     //handleToggleSign
     if (sign === "+/-") {
@@ -215,38 +211,35 @@ const Calculator = () => {
     }
   };
 
-  const equals = () => {
+  const equals = (isKeepOperationClickedState, _secondNumber, _firstNumber) => {
+    let result;
+
     if (isPlusClicked) {
-      let sum = +secondNumber + +firstNumber;
-      setInput(sum);
-      setFirstNumber("");
-      setSecondNumber(sum);
-      setIsPlusClicked(false);
+      result = +_secondNumber + +_firstNumber;
+      setIsPlusClicked(isKeepOperationClickedState);
     }
+
     if (isMinusClicked) {
-      let extracted = +secondNumber - +firstNumber;
-      setInput(extracted);
-      setFirstNumber("");
-      setSecondNumber(extracted);
-      setIsMinusClicked(false);
+      result = +_secondNumber - +_firstNumber;
+      setIsMinusClicked(isKeepOperationClickedState);
     }
+
     if (isMultiplyClicked && firstNumber) {
-      // setIsDivideClicked(false);
-      console.log("isMultiplyClicked && firstNumber");
-      let multiplied = +secondNumber * +firstNumber;
-      setInput(multiplied);
-      setFirstNumber("");
-      setSecondNumber(multiplied);
+      result = +_secondNumber * +_firstNumber;
+      setIsMultiplyClicked(isKeepOperationClickedState);
     }
+
     if (isDivideClicked && firstNumber) {
-      // setIsMultiplyClicked(false);
-      console.log("isDivideClicked && firstNumber");
-      let divided = +secondNumber / +firstNumber;
-      setInput(divided);
+      result = +_secondNumber / +_firstNumber;
+      setIsDivideClicked(isKeepOperationClickedState);
+    }
+    if (result !== undefined) {
+      setInput(result);
       setFirstNumber("");
-      setSecondNumber(divided);
+      setSecondNumber(result);
     }
   };
+
   const handleButtonClick = (col) => {
     if (col?.operation) {
       operation(col.operation);
