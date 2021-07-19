@@ -1,7 +1,7 @@
 import React from "react";
 import { useState, useEffect } from "react";
 import { Row, Col } from "antd";
-import { CalcConfig } from "./config";
+import { CalcConfig, Operations } from "./config";
 
 const Calculator = () => {
   //input states
@@ -10,17 +10,11 @@ const Calculator = () => {
   const [input, setInput] = useState("");
 
   //operations states
-  const [isPlusClicked, setIsPlusClicked] = useState(false);
-  const [isMinusClicked, setIsMinusClicked] = useState(false);
-  const [isMultiplyClicked, setIsMultiplyClicked] = useState(false);
-  const [isDivideClicked, setIsDivideClicked] = useState(false);
+  const [operationRef, setOperation] = useState(Operations.Equals);
 
   console.log("firstNumber", firstNumber);
   console.log("secondNumber", secondNumber);
-  console.log("isPlusClicked", isPlusClicked);
-  console.log("isMinusClicked", isMinusClicked);
-  console.log("isMultiplyClicked", isMultiplyClicked);
-  console.log("isDivideClicked", isDivideClicked);
+  console.log("operation", operationRef);
 
   const handleKeyDown = (event) => {
     // TODO replace to switch case
@@ -134,48 +128,11 @@ const Calculator = () => {
       setInput(-secondNumber);
     }
   };
-  const clearPreviousOperations = () => {
-    if (isMinusClicked) {
-      setIsMinusClicked(false);
-    }
-    if (isPlusClicked) {
-      setIsPlusClicked(false);
-    }
-    if (isDivideClicked) {
-      setIsDivideClicked(false);
-    }
-    if (isMultiplyClicked) {
-      setIsMultiplyClicked(false);
-    }
-  };
 
   const operation = (sign) => {
     //handleAddition
-    if (sign === "+") {
-      clearPreviousOperations();
-      setIsPlusClicked(true);
-      if (secondNumber === "") {
-        setSecondNumber(firstNumber);
-        setFirstNumber("");
-      } else {
-        equals(true, secondNumber, firstNumber);
-      }
-    }
-    //handleMinus
-    if (sign === "-") {
-      clearPreviousOperations();
-      setIsMinusClicked(true);
-      if (secondNumber === "") {
-        setSecondNumber(firstNumber);
-        setFirstNumber("");
-      } else {
-        equals(true, secondNumber, firstNumber);
-      }
-    }
-    //handleMultiply
-    if (sign === "*") {
-      clearPreviousOperations();
-      setIsMultiplyClicked(true);
+    if (sign !== Operations.Equals && Object.keys(Operations).includes(sign)) {
+      setOperation(sign);
       if (secondNumber === "") {
         setSecondNumber(firstNumber);
         setFirstNumber("");
@@ -183,19 +140,9 @@ const Calculator = () => {
         equals(true, secondNumber, firstNumber);
       }
     }
-    //handleDivide
-    if (sign === "/") {
-      clearPreviousOperations();
-      setIsDivideClicked(true);
-      if (secondNumber === "") {
-        setSecondNumber(firstNumber);
-        setFirstNumber("");
-      } else if (firstNumber !== "") {
-        equals(true, secondNumber, firstNumber);
-      }
-    }
+
     //handleEquals
-    if (sign === "=") {
+    if (sign === Operations.Equals) {
       equals(false, secondNumber, firstNumber);
     }
     //handleToggleSign
@@ -214,25 +161,26 @@ const Calculator = () => {
   const equals = (isKeepOperationClickedState, _secondNumber, _firstNumber) => {
     let result;
 
-    if (isPlusClicked) {
+    if (!isKeepOperationClickedState) {
+      setOperation(Operations.Equals);
+    }
+
+    if (operationRef === Operations.Plus) {
       result = +_secondNumber + +_firstNumber;
-      setIsPlusClicked(isKeepOperationClickedState);
     }
 
-    if (isMinusClicked) {
+    if (operationRef === Operations.Minus) {
       result = +_secondNumber - +_firstNumber;
-      setIsMinusClicked(isKeepOperationClickedState);
     }
 
-    if (isMultiplyClicked && firstNumber) {
+    if (operationRef === Operations.Multiply) {
       result = +_secondNumber * +_firstNumber;
-      setIsMultiplyClicked(isKeepOperationClickedState);
     }
 
-    if (isDivideClicked && firstNumber) {
+    if (operationRef === Operations.Divide) {
       result = +_secondNumber / +_firstNumber;
-      setIsDivideClicked(isKeepOperationClickedState);
     }
+
     if (result !== undefined) {
       setInput(result);
       setFirstNumber("");

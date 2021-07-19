@@ -1,9 +1,13 @@
+// TODO: think about change with numbers (example. 0,1 ...)
 const Operations = {
-  Plus: 0,
-  0: "Plus",
+  Equals: "Equals",
+  Plus: "Plus",
+  Minus: "Minus",
+  Multiply: "Multiply",
+  Divide: "Divide",
 };
 
-export const CalcConfig = [
+const CalcConfig = [
   [
     {
       value: "AC",
@@ -23,7 +27,7 @@ export const CalcConfig = [
       value: "/",
       className: "btn",
       backgroundColor: "rgb(187, 126, 36)",
-      operation: "/",
+      operation: Operations.Divide,
     },
   ],
   [
@@ -43,7 +47,7 @@ export const CalcConfig = [
       value: "*",
       className: "btn",
       backgroundColor: "rgb(187, 126, 36)",
-      operation: "*",
+      operation: Operations.Multiply,
     },
   ],
   [
@@ -63,7 +67,7 @@ export const CalcConfig = [
       value: "-",
       className: "btn",
       backgroundColor: "rgb(187, 126, 36)",
-      operation: "-",
+      operation: Operations.Minus,
     },
   ],
   [
@@ -82,9 +86,8 @@ export const CalcConfig = [
     {
       value: "+",
       className: "btn",
-      key: Operations.Plus,
       backgroundColor: "rgb(187, 126, 36)",
-      operation: "+",
+      operation: Operations.Plus,
     },
   ],
   [
@@ -103,7 +106,7 @@ export const CalcConfig = [
       value: "=",
       className: "btn",
       backgroundColor: "rgb(187, 126, 36)",
-      operation: "=",
+      operation: Operations.Equals,
     },
   ],
 ];
@@ -113,3 +116,5 @@ const OperationsConfig = {
     doOperation(right, left) {},
   },
 };
+
+export { Operations, CalcConfig };
