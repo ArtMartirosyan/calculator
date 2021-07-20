@@ -9,15 +9,10 @@ const Calculator = () => {
   const [secondNumber, setSecondNumber] = useState("");
   const [input, setInput] = useState("");
 
-  //operations states
+  //operations state
   const [operationRef, setOperation] = useState(Operations.Equals);
 
-  console.log("firstNumber", firstNumber);
-  console.log("secondNumber", secondNumber);
-  console.log("operation", operationRef);
-
   const handleKeyDown = (event) => {
-    // TODO replace to switch case
     switch (event.key) {
       case "1":
         handleNumClick(1);
@@ -164,21 +159,22 @@ const Calculator = () => {
     if (!isKeepOperationClickedState) {
       setOperation(Operations.Equals);
     }
+    switch (operationRef) {
+      case Operations.Plus:
+        result = +_secondNumber + +_firstNumber;
+        break;
+      case Operations.Divide:
+        result = +_secondNumber / +_firstNumber;
+        break;
+      case Operations.Minus:
+        result = +_secondNumber - +_firstNumber;
+        break;
+      case Operations.Multiply:
+        result = +_secondNumber * +_firstNumber;
+        break;
 
-    if (operationRef === Operations.Plus) {
-      result = +_secondNumber + +_firstNumber;
-    }
-
-    if (operationRef === Operations.Minus) {
-      result = +_secondNumber - +_firstNumber;
-    }
-
-    if (operationRef === Operations.Multiply) {
-      result = +_secondNumber * +_firstNumber;
-    }
-
-    if (operationRef === Operations.Divide) {
-      result = +_secondNumber / +_firstNumber;
+      default:
+        break;
     }
 
     if (result !== undefined) {
